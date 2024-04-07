@@ -1,0 +1,87 @@
+  403  tmux ls
+  726  tmux new -s w2
+  728  tmux a -t w2
+  730  tmux a -t w2
+  733  tmux a -t w2
+  735  tmux a -t w2
+  737  tmux a -t w2
+  743  tmux a -t w2
+  761  tmux a -t w2
+  768  tmux a -t w2
+  770  tmux ls
+  771  tmux a -t w2
+  907  tmux ls
+  908  tmux a -t w2
+  910  tmux a -t w2
+  912  tmux a -t w2
+  913  tmux capture-pane
+  914  tmux a -t w2
+  915  tmux capture-pane -pS -
+  916  tmux capture-pane -pS - > w2ner_full_10_epochs_log.txt
+  918  tmux a -t w2
+  920  tmux ls
+  929  tmux a -t w2
+  930  tmux ls
+  959  tmux new -s w2
+  960  tmux a -t w2
+  964  tmux ls
+  965  tmux a -t w2
+  967  tmux a -t w2
+  969  tmux a -t w2
+  971  tmux a -t w2
+  983  tmux a -t w2
+  985  tmux a -t w2
+  995  tmux capture-pane -pS - > ~/w2ner_full_(author_format)_1_epoch_log.txt 
+  996  tmux capture-pane -pS - > ~/w2ner_full_author_format_1_epoch_log.txt 
+ 1030  tmux ls
+ 1091  tmux ls
+ 1115  tmux new -s w2
+ 1116  tmux a -t w2
+ 1118  tmux a -t w2
+ 1120  tmux a -t w2
+ 1121  tmux ls
+ 1122  tmux a -t w2
+ 1124  tmux a -t w2
+ 1126  tmux ls
+ 1127  tmux  a -t w2
+ 1128  tmux ls
+ 1129  tmux a -t w2
+ 1136  tmux a -t w2
+ 1138  tmux a -t w2
+ 1140  tmux a -t w2
+ 1143  tmux a -t w2
+ 1146  tmux a -t w2
+ 1148  tmux a -t w2
+ 1150  tmux a -t w2
+ 1153  tmux a -t w2
+ 1161  tmux a -t w2
+ 1164  tmux a -t w2
+ 1166  tmux a -t w2
+ 1168  tmux a -t w2
+ 1170  tmux a -t w2
+ 1175  tmux a -t w2
+ 1180  tmux a -t w2
+ 1183  tmux a -t w2
+ 1185  tmux ls
+ 1188  tmux a -t w2
+ 1197  tmux a -t w2
+ 1199  tmux a -t w2
+ 1202  tmux a -t w2
+ 1206  tmux a -t w2
+ 1208  tmux a -t w2
+ 1209  tmux ls
+ 1210  tmux a -t w2
+ 1212  history | grep -i tmux
+ 1213  tmux a -t w2
+ 1239  tmux a -t w2
+ 1241  tmux ls
+ 1242  tmux new -s w2
+ 1244  tmux new -s w2
+ 1245  tmux a -t w2
+ 1247  tmux a -t w2
+ 1249  tmux a -t w2
+ 1251  tmux a -t w2
+ 1253  tmux a -t w2
+ 1257  tmux a -t w2
+ 1260  history | grep -i tmux
+ 1261  history | grep -i tmux > ~/w2ner_full_no_mlp_1_epoch_log.txt

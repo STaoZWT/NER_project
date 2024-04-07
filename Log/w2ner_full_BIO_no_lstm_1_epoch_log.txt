@@ -1,0 +1,363 @@
+(base) ubuntu@DESKTOP-409C902:~$ conda deactivate
+ubuntu@DESKTOP-409C902:~$ conda activate pytorch2
+(pytorch2) ubuntu@DESKTOP-409C902:~$ ls
+5726_assg3  Miniconda3-latest-Linux-x86_64.sh  conda-ins.txt  w2ner_full_10_epochs_log.txt
+Go          NER_project                        miniconda3     w2ner_full_author_format_1_epoch_log.txt
+Jupyter     OldJupyter                         snap
+(pytorch2) ubuntu@DESKTOP-409C902:~$ cd Jupyter/
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter$ ls
+Token_Classification.ipynb  W2NER  englishv12  englishv12.zip  test.ipynb
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter$ cd W2NER/
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ ls
+LICENSE    __pycache__  config     data            figures  main.py   model.py     utils.py
+README.md  cache        config.py  data_loader.py  log      model.pt  output.json
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json
+2024-04-07 17:13:25 - INFO: dict_items([('dataset', 'englishv12'), ('save_path', './model.pt'), ('predict_path', './output.json'), ('dist_emb_size', 20), ('type_emb_si
+ze', 20), ('lstm_hid_size', 768), ('conv_hid_size', 96), ('bert_hid_size', 768), ('biaffine_size', 768), ('ffnn_hid_size', 128), ('dilation', [1, 2, 3]), ('emb_dropout
+', 0.5), ('conv_dropout', 0.5), ('out_dropout', 0.33), ('epochs', 10), ('batch_size', 12), ('learning_rate', 0.001), ('weight_decay', 0), ('clip_grad_norm', 1.0), ('be
+rt_name', 'roberta-base'), ('bert_learning_rate', 2e-05), ('warm_factor', 0.1), ('use_bert_last_4_layers', True), ('seed', 123), ('config', 'config/englishv12.json'),
+('device', 0)])
+2024-04-07 17:13:27 - INFO: Loading Data
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/datasets/load.py:926: FutureWarning: The repository for englishv12 contains custom code which must b
+e executed to correctly load the dataset. You can inspect the repository content at ./data/englishv12/englishv12.py
+You can avoid this message in future by passing the argument `trust_remote_code=True`.
+Passing `trust_remote_code=True` will be mandatory to load this dataset from the next major release of `datasets`.
+  warnings.warn(
+暂时跑10000个sample, 哎
+Map: 100%|████████████████████████████████████████████████████| 115812/115812 [00:04<00:00, 28077.83 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 15680/15680 [00:00<00:00, 25686.92 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 12217/12217 [00:00<00:00, 29052.80 examples/s]
+O
+B-PERSON
+I-PERSON
+B-NORP
+I-NORP
+B-FAC
+I-FAC
+B-ORG
+I-ORG
+B-GPE
+I-GPE
+B-LOC
+I-LOC
+B-PRODUCT
+I-PRODUCT
+B-DATE
+I-DATE
+B-TIME
+I-TIME
+B-PERCENT
+I-PERCENT
+B-MONEY
+I-MONEY
+B-QUANTITY
+I-QUANTITY
+B-ORDINAL
+I-ORDINAL
+B-CARDINAL
+I-CARDINAL
+B-EVENT
+I-EVENT
+B-WORK_OF_ART
+I-WORK_OF_ART
+B-LAW
+I-LAW
+B-LANGUAGE
+I-LANGUAGE
+2024-04-07 17:14:52 - INFO: Building Model
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.de
+nse.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py:457: FutureWarning: This implementation of AdamW is deprecated and will
+ be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
+  warnings.warn(
+2024-04-07 17:14:54 - INFO: Epoch: 0
+Traceback (most recent call last):
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 300, in <module>
+    trainer.train(i, train_loader)
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 54, in train
+    outputs = model(bert_inputs, grid_mask2d, dist_inputs, pieces2word, sent_length)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/Jupyter/W2NER/model.py", line 239, in forward
+    word_reps, _ = pad_packed_sequence(packed_outs, batch_first=True, total_length=sent_length.max())
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/utils/rnn.py", line 325, in pad_packed_sequence
+    max_seq_length = sequence.batch_sizes.size(0)
+AttributeError: 'Tensor' object has no attribute 'batch_sizes'
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json
+2024-04-07 17:15:55 - INFO: dict_items([('dataset', 'englishv12'), ('save_path', './model.pt'), ('predict_path', './output.json'), ('dist_emb_size', 20), ('type_emb_si
+ze', 20), ('lstm_hid_size', 768), ('conv_hid_size', 96), ('bert_hid_size', 768), ('biaffine_size', 768), ('ffnn_hid_size', 128), ('dilation', [1, 2, 3]), ('emb_dropout
+', 0.5), ('conv_dropout', 0.5), ('out_dropout', 0.33), ('epochs', 10), ('batch_size', 12), ('learning_rate', 0.001), ('weight_decay', 0), ('clip_grad_norm', 1.0), ('be
+rt_name', 'roberta-base'), ('bert_learning_rate', 2e-05), ('warm_factor', 0.1), ('use_bert_last_4_layers', True), ('seed', 123), ('config', 'config/englishv12.json'),
+('device', 0)])
+2024-04-07 17:15:57 - INFO: Loading Data
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/datasets/load.py:926: FutureWarning: The repository for englishv12 contains custom code which must b
+e executed to correctly load the dataset. You can inspect the repository content at ./data/englishv12/englishv12.py
+You can avoid this message in future by passing the argument `trust_remote_code=True`.
+Passing `trust_remote_code=True` will be mandatory to load this dataset from the next major release of `datasets`.
+  warnings.warn(
+暂时跑10000个sample, 哎
+Map: 100%|████████████████████████████████████████████████████| 115812/115812 [00:04<00:00, 28085.64 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 15680/15680 [00:00<00:00, 25675.34 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 12217/12217 [00:00<00:00, 25029.99 examples/s]
+O
+B-PERSON
+I-PERSON
+B-NORP
+I-NORP
+B-FAC
+I-FAC
+B-ORG
+I-ORG
+B-GPE
+I-GPE
+B-LOC
+I-LOC
+B-PRODUCT
+I-PRODUCT
+B-DATE
+I-DATE
+B-TIME
+I-TIME
+B-PERCENT
+I-PERCENT
+B-MONEY
+I-MONEY
+B-QUANTITY
+I-QUANTITY
+B-ORDINAL
+I-ORDINAL
+B-CARDINAL
+I-CARDINAL
+B-EVENT
+I-EVENT
+B-WORK_OF_ART
+I-WORK_OF_ART
+B-LAW
+I-LAW
+B-LANGUAGE
+I-LANGUAGE
+2024-04-07 17:17:24 - INFO: Building Model
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.de
+nse.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py:457: FutureWarning: This implementation of AdamW is deprecated and will
+ be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
+  warnings.warn(
+2024-04-07 17:17:25 - INFO: Epoch: 0
+^CTraceback (most recent call last):
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 300, in <module>
+    trainer.train(i, train_loader)
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 61, in train
+    self.optimizer.step()
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/optim/lr_scheduler.py", line 75, in wrapper
+    return wrapped(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/optim/optimizer.py", line 385, in wrapper
+    out = func(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py", line 513, in step
+    exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1.0 - beta2)
+KeyboardInterrupt
+
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json
+2024-04-07 17:18:57 - INFO: dict_items([('dataset', 'englishv12'), ('save_path', './model.pt'), ('predict_path', './output.json'), ('dist_emb_size', 20), ('type_emb_si
+ze', 20), ('lstm_hid_size', 768), ('conv_hid_size', 96), ('bert_hid_size', 768), ('biaffine_size', 768), ('ffnn_hid_size', 128), ('dilation', [1, 2, 3]), ('emb_dropout
+', 0.5), ('conv_dropout', 0.5), ('out_dropout', 0.33), ('epochs', 10), ('batch_size', 12), ('learning_rate', 0.001), ('weight_decay', 0), ('clip_grad_norm', 1.0), ('be
+rt_name', 'roberta-base'), ('bert_learning_rate', 2e-05), ('warm_factor', 0.1), ('use_bert_last_4_layers', True), ('seed', 123), ('config', 'config/englishv12.json'),
+('device', 0)])
+2024-04-07 17:18:57 - INFO: Loading Data
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/datasets/load.py:926: FutureWarning: The repository for englishv12 contains custom code which must b
+e executed to correctly load the dataset. You can inspect the repository content at ./data/englishv12/englishv12.py
+You can avoid this message in future by passing the argument `trust_remote_code=True`.
+Passing `trust_remote_code=True` will be mandatory to load this dataset from the next major release of `datasets`.
+  warnings.warn(
+暂时跑10000个sample, 哎
+Map: 100%|████████████████████████████████████████████████████| 115812/115812 [00:04<00:00, 26629.11 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 15680/15680 [00:00<00:00, 26698.08 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 12217/12217 [00:00<00:00, 23677.67 examples/s]
+O
+B-PERSON
+I-PERSON
+B-NORP
+I-NORP
+B-FAC
+I-FAC
+B-ORG
+I-ORG
+B-GPE
+I-GPE
+B-LOC
+I-LOC
+B-PRODUCT
+I-PRODUCT
+B-DATE
+I-DATE
+B-TIME
+I-TIME
+B-PERCENT
+I-PERCENT
+B-MONEY
+I-MONEY
+B-QUANTITY
+I-QUANTITY
+B-ORDINAL
+I-ORDINAL
+B-CARDINAL
+I-CARDINAL
+B-EVENT
+I-EVENT
+B-WORK_OF_ART
+I-WORK_OF_ART
+B-LAW
+I-LAW
+B-LANGUAGE
+I-LANGUAGE
+2024-04-07 17:20:27 - INFO: Building Model
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.de
+nse.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py:457: FutureWarning: This implementation of AdamW is deprecated and will
+ be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
+  warnings.warn(
+2024-04-07 17:20:28 - INFO: Epoch: 0
+^C^C^CTraceback (most recent call last):
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 300, in <module>
+    trainer.train(i, train_loader)
+  File "/home/ubuntu/Jupyter/W2NER/main.py", line 57, in train
+    loss = self.criterion(outputs[grid_mask2d], grid_labels[grid_mask2d])
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1507, in _wrapped_call_impl
+    def _wrapped_call_impl(self, *args, **kwargs):
+KeyboardInterrupt
+^C
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ ^C
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ ls
+LICENSE    __pycache__  config     data            figures  main.py   model.py     utils.py
+README.md  cache        config.py  data_loader.py  log      model.pt  output.json
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ vim config/englishv12.json
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json
+2024-04-07 17:36:15 - INFO: dict_items([('dataset', 'englishv12'), ('save_path', './model.pt'), ('predict_path', './output.json'), ('dist_emb_size', 20), ('type_emb_si
+ze', 20), ('lstm_hid_size', 768), ('conv_hid_size', 96), ('bert_hid_size', 768), ('biaffine_size', 768), ('ffnn_hid_size', 128), ('dilation', [1, 2, 3]), ('emb_dropout
+', 0.5), ('conv_dropout', 0.5), ('out_dropout', 0.33), ('epochs', 1), ('batch_size', 12), ('learning_rate', 0.001), ('weight_decay', 0), ('clip_grad_norm', 1.0), ('ber
+t_name', 'roberta-base'), ('bert_learning_rate', 2e-05), ('warm_factor', 0.1), ('use_bert_last_4_layers', True), ('seed', 123), ('config', 'config/englishv12.json'), (
+'device', 0)])
+2024-04-07 17:36:16 - INFO: Loading Data
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/datasets/load.py:926: FutureWarning: The repository for englishv12 contains custom code which must b
+e executed to correctly load the dataset. You can inspect the repository content at ./data/englishv12/englishv12.py
+You can avoid this message in future by passing the argument `trust_remote_code=True`.
+Passing `trust_remote_code=True` will be mandatory to load this dataset from the next major release of `datasets`.
+  warnings.warn(
+暂时跑10000个sample, 哎
+Map: 100%|████████████████████████████████████████████████████| 115812/115812 [00:04<00:00, 25972.58 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 15680/15680 [00:00<00:00, 23931.34 examples/s]
+Map: 100%|██████████████████████████████████████████████████████| 12217/12217 [00:00<00:00, 27077.31 examples/s]
+O
+B-PERSON
+I-PERSON
+B-NORP
+I-NORP
+B-FAC
+I-FAC
+B-ORG
+I-ORG
+B-GPE
+I-GPE
+B-LOC
+I-LOC
+B-PRODUCT
+I-PRODUCT
+B-DATE
+I-DATE
+B-TIME
+I-TIME
+B-PERCENT
+I-PERCENT
+B-MONEY
+I-MONEY
+B-QUANTITY
+I-QUANTITY
+B-ORDINAL
+I-ORDINAL
+B-CARDINAL
+I-CARDINAL
+B-EVENT
+I-EVENT
+B-WORK_OF_ART
+I-WORK_OF_ART
+B-LAW
+I-LAW
+B-LANGUAGE
+I-LANGUAGE
+2024-04-07 17:37:47 - INFO: Building Model
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.de
+nse.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py:457: FutureWarning: This implementation of AdamW is deprecated and will
+ be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
+  warnings.warn(
+2024-04-07 17:37:48 - INFO: Epoch: 0
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1509: UndefinedMetricWarning: Recall is ill-defined and being set
+ to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+2024-04-07 18:26:02 - INFO:
++---------+--------+--------+-----------+--------+
+| Train 0 |  Loss  |   F1   | Precision | Recall |
++---------+--------+--------+-----------+--------+
+|  Label  | 0.0122 | 0.4611 |   0.4263  | 0.5283 |
++---------+--------+--------+-----------+--------+
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being
+set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+2024-04-07 18:35:48 - INFO: EVAL Label F1 [0.99967495 0.92547446 0.94416018 0.89015152 0.63309353 0.66666667
+ 0.65254237 0.89618617 0.91471712 0.92781034 0.88354701 0.74203822
+ 0.74545455 0.51612903 0.57075472 0.87751371 0.8752491  0.71766342
+ 0.75273523 0.91441789 0.93550079 0.91560694 0.94203379 0.73743017
+ 0.84507042 0.78854025 0.         0.8264374  0.8        0.62839879
+ 0.66149068 0.60638298 0.68915663 0.67741935 0.70103093 0.8
+ 0.        ]
+2024-04-07 18:35:48 - INFO:
++--------+--------+-----------+--------+
+| EVAL 0 |   F1   | Precision | Recall |
++--------+--------+-----------+--------+
+| Label  | 0.7460 |   0.7418  | 0.7567 |
+| Entity | 0.8791 |   0.8520  | 0.9080 |
++--------+--------+-----------+--------+
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being
+set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+2024-04-07 18:47:00 - INFO: TEST Label F1 [0.99964966 0.89559165 0.91788079 0.8622523  0.73605948 0.67169811
+ 0.76482618 0.8786431  0.88547245 0.92089326 0.88662593 0.7309417
+ 0.76237624 0.64044944 0.71052632 0.8445146  0.85762214 0.62242563
+ 0.68561873 0.89830508 0.93167702 0.88555858 0.93719212 0.69565217
+ 0.79661017 0.73529412 0.         0.79186377 0.808933   0.5875
+ 0.6866485  0.62783172 0.63728814 0.63414634 0.54212454 0.57142857]
+2024-04-07 18:47:00 - INFO:
++--------+--------+-----------+--------+
+| TEST 0 |   F1   | Precision | Recall |
++--------+--------+-----------+--------+
+| Label  | 0.7512 |   0.7476  | 0.7657 |
+| Entity | 0.8571 |   0.8253  | 0.8914 |
++--------+--------+-----------+--------+
+2024-04-07 18:47:01 - INFO: Best DEV F1: 0.8791
+2024-04-07 18:47:01 - INFO: Best TEST F1: 0.8571
+
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1509: UndefinedMetricWarning: Precision is ill-defined and being
+set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+2024-04-07 18:58:14 - INFO: TEST Label F1 [0.99964966 0.89559165 0.91788079 0.8622523  0.73605948 0.67169811
+ 0.76482618 0.8786431  0.88547245 0.92089326 0.88662593 0.7309417
+ 0.76237624 0.64044944 0.71052632 0.8445146  0.85762214 0.62242563
+ 0.68561873 0.89830508 0.93167702 0.88555858 0.93719212 0.69565217
+ 0.79661017 0.73529412 0.         0.79186377 0.808933   0.5875
+ 0.6866485  0.62783172 0.63728814 0.63414634 0.54212454 0.57142857]
+2024-04-07 18:58:14 - INFO:
++------------+--------+-----------+--------+
+| TEST Final |   F1   | Precision | Recall |
++------------+--------+-----------+--------+
+|   Label    | 0.7512 |   0.7476  | 0.7657 |
+|   Entity   | 0.8571 |   0.8253  | 0.8914 |
++------------+--------+-----------+--------+
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$

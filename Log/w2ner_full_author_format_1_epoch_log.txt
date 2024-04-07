@@ -1,0 +1,108 @@
+(base) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ ls
+LICENSE  README.md  __pycache__  cache  config  config.py  data  data_loader.py  figures  log  main.py  model.pt  model.py  output.json  utils.py
+(base) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ conda deactivate
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ conda deactivate
+(base) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ conda deactivate
+ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ conda activate pytorch2
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ ls
+LICENSE  README.md  __pycache__  cache  config  config.py  data  data_loader.py  figures  log  main.py  model.pt  model.py  output.json  utils.py
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main^C
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ vim data_loader.py
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json ^C
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ vim config/englishv12.json
+(pytorch2) ubuntu@DESKTOP-409C902:~/Jupyter/W2NER$ python3 main.py --config config/englishv12.json
+2024-04-07 15:56:41 - INFO: dict_items([('dataset', 'englishv12'), ('save_path', './model.pt'), ('predict_path', './output.json'), ('dist_emb_size', 20), ('type_emb_si
+ze', 20), ('lstm_hid_size', 768), ('conv_hid_size', 96), ('bert_hid_size', 768), ('biaffine_size', 768), ('ffnn_hid_size', 128), ('dilation', [1, 2, 3]), ('emb_dropout
+', 0.5), ('conv_dropout', 0.5), ('out_dropout', 0.33), ('epochs', 10), ('batch_size', 12), ('learning_rate', 0.001), ('weight_decay', 0), ('clip_grad_norm', 1.0), ('be
+rt_name', 'roberta-base'), ('bert_learning_rate', 2e-05), ('warm_factor', 0.1), ('use_bert_last_4_layers', True), ('seed', 123), ('config', 'config/englishv12.json'),
+('device', 0)])
+2024-04-07 15:56:42 - INFO: Loading Data
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/datasets/load.py:926: FutureWarning: The repository for englishv12 contains custom code which must b
+e executed to correctly load the dataset. You can inspect the repository content at ./data/englishv12/englishv12.py
+You can avoid this message in future by passing the argument `trust_remote_code=True`.
+Passing `trust_remote_code=True` will be mandatory to load this dataset from the next major release of `datasets`.
+  warnings.warn(
+暂时跑10000个sample, 哎
+Map: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 115812/115812 [00:04<00:00, 27343.21 examples/s]
+Map: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 15680/15680 [00:00<00:00, 25070.90 examples/s]
+Map: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████| 12217/12217 [00:00<00:00, 28469.32 examples/s]
+O
+PERSON
+PERSON
+NORP
+NORP
+FAC
+FAC
+ORG
+ORG
+GPE
+GPE
+LOC
+LOC
+PRODUCT
+PRODUCT
+DATE
+DATE
+TIME
+TIME
+PERCENT
+PERCENT
+MONEY
+MONEY
+QUANTITY
+QUANTITY
+ORDINAL
+ORDINAL
+CARDINAL
+CARDINAL
+EVENT
+EVENT
+WORK_OF_ART
+WORK_OF_ART
+LAW
+LAW
+LANGUAGE
+LANGUAGE
+2024-04-07 15:58:14 - INFO: Building Model
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.de
+nse.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/transformers/optimization.py:457: FutureWarning: This implementation of AdamW is deprecated and will
+ be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
+  warnings.warn(
+2024-04-07 15:58:15 - INFO: Epoch: 0
+
+/home/ubuntu/miniconda3/envs/pytorch2/lib/python3.10/site-packages/sklearn/metrics/_classification.py:1509: UndefinedMetricWarning: Recall is ill-defined and being set
+ to 0.0 in labels with no true samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, f"{metric.capitalize()} is", len(result))
+2024-04-07 16:43:53 - INFO:
++---------+--------+--------+-----------+--------+
+| Train 0 |  Loss  |   F1   | Precision | Recall |
++---------+--------+--------+-----------+--------+
+|  Label  | 0.0340 | 0.3990 |   0.4538  | 0.4185 |
++---------+--------+--------+-----------+--------+
+
+2024-04-07 16:51:37 - INFO: EVAL Label F1 [0.99952472 0.89967491 0.90688756 0.88853119 0.45054945 0.8576928
+ 0.91117711 0.67353952 0.4084507  0.85139173 0.65273312 0.90824261
+ 0.91306919 0.65838509 0.75668449 0.81625835 0.44534413 0.36933798
+ 0.61788618 0.81818182]
+2024-04-07 16:51:37 - INFO:
++--------+--------+-----------+--------+
+| EVAL 0 |   F1   | Precision | Recall |
++--------+--------+-----------+--------+
+| Label  | 0.7402 |   0.8007  | 0.7194 |
+| Entity | 0.8558 |   0.8470  | 0.8648 |
++--------+--------+-----------+--------+
+2024-04-07 16:59:30 - INFO: TEST Label F1 [0.99947644 0.86856064 0.88079318 0.86174636 0.4600939  0.83404255
+ 0.87266617 0.67264574 0.4962406  0.79860365 0.58378378 0.87210719
+ 0.84950774 0.56680162 0.71264368 0.77908113 0.44642857 0.42735043
+ 0.47619048 0.7027027 ]
+2024-04-07 16:59:30 - INFO:
++--------+--------+-----------+--------+
+| TEST 0 |   F1   | Precision | Recall |
++--------+--------+-----------+--------+
+| Label  | 0.7081 |   0.7807  | 0.6917 |
+| Entity | 0.8209 |   0.7982  | 0.8449 |
++--------+--------+-----------+--------+
+2024-04-07 16:59:34 - INFO: Epoch: 1
+
