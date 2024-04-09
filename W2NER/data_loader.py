@@ -11,6 +11,7 @@ import os
 import utils
 import requests
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+use_author_ner_format = True
 
 dis2idx = np.zeros((1000), dtype='int64')
 dis2idx[1] = 1
@@ -268,33 +269,36 @@ def process_bert(data, tokenizer, vocab):
         # 作者没有针对文章提出的标记方案和BIO、Span等方案做过对比
         # 我们用的标记和作者的还不一样
         # https://github.com/ljynlp/W2NER/issues/13
-        # 代码中，影响主要是_grid_labels 这个参数
-        """
-        for entity in instance["ner"]:
-            index = entity["index"]
-            for i in range(len(index)):
-                if i + 1 >= len(index):
-                    break
-                _grid_labels[index[i], index[i + 1]] = 1
-            _grid_labels[index[-1], index[0]] = vocab.label_to_id(entity["type"])
+        # 代码中，影响主要是_grid_labels 这个参数，应该还影响precision,recall
+        
+        _entity_text = None
 
-        _entity_text = set([utils.convert_index_to_text(e["index"], vocab.label_to_id(e["type"]))
+        if use_author_ner_format:
+            for entity in instance["ner"]:
+                # print("use au ner for, entity", entity)
+                index = entity["index"]
+                for i in range(len(index)):
+                    if i + 1 >= len(index):
+                        break
+                    _grid_labels[index[i], index[i + 1]] = 1
+                _grid_labels[index[-1], index[0]] = vocab.label_to_id(entity["type"])
+
+            _entity_text = set([utils.convert_index_to_text(e["index"], vocab.label_to_id(e["type"]))
                             for e in instance["ner"]])
-        """
-        # print(instance["ner_tags"])
-        for oldindex, ner_tag in enumerate(instance["ner_tags"]):
-            # index = entity["index"]
-            # print(oldindex, ner_tag)
-            if ner_tag == "O":
-                continue
-            index = [oldindex]
-            for i in range(len(index)):
-                if i + 1 >= len(index):
-                    break
-                _grid_labels[index[i], index[i + 1]] = 1
-            _grid_labels[index[-1], index[0]] = vocab.label_to_id(ner_tag)
+        else:
+            for oldindex, ner_tag in enumerate(instance["ner_tags"]):
+                # index = entity["index"]
+                # print(oldindex, ner_tag)
+                if ner_tag == "O":
+                    continue
+                index = [oldindex]
+                for i in range(len(index)):
+                    if i + 1 >= len(index):
+                        break
+                    _grid_labels[index[i], index[i + 1]] = 1
+                _grid_labels[index[-1], index[0]] = vocab.label_to_id(ner_tag)
 
-        _entity_text = set([utils.convert_index_to_text([index], vocab.label_to_id(tag)) for index, tag in enumerate(instance["ner_tags"]) if tag != "O"  ])
+            _entity_text = set([utils.convert_index_to_text([index], vocab.label_to_id(tag)) for index, tag in enumerate(instance["ner_tags"]) if tag != "O"  ])
 
         sent_length.append(length)
         bert_inputs.append(_bert_inputs)
@@ -411,74 +415,106 @@ def fill_vocab(vocab, dataset):
     """
     pass
 
-def load_data_bert(config):
-    #with open('./data/{}/train.json'.format(config.dataset), 'r', encoding='utf-8') as f:
-    #    train_data = json.load(f)
-    #with open('./data/{}/dev.json'.format(config.dataset), 'r', encoding='utf-8') as f:
-    #    dev_data = json.load(f)
-    #with open('./data/{}/test.json'.format(config.dataset), 'r', encoding='utf-8') as f:
-    #    test_data = json.load(f)
-    datasets = load_dataset('./data/englishv12')
-    # update_datasets = datasets.map(index_to_str_v2, batched=False)
-    print("暂时跑10000个sample, 哎")
-    train_data = load_dataset('./data/englishv12',split='train[:10000]')
-    dev_data = load_dataset('./data/englishv12',split='validation[:1000]')
-    test_data = load_dataset('./data/englishv12',split='test[:1000]')
-    #train_data = datasets["train"]
-    #dev_data = datasets["validation"]
-    #test_data = datasets["test"]
+def convert_format(example):
+    # tokenized_inputs = tokenizer(examples["tokens"], truncation=True, is_split_into_words=True)
 
+    ner_json = []
+    prev_dict = {}
+    prev_label_tail = None
+    prev_index = []
+    new_ner_tags = example["ner_tags"][:]
+    new_ner_tags.append("O")
+    for i, label in enumerate(new_ner_tags):
+        new_label_tail = label.split("-")[-1]
+        new_label_head = label.split("-")[0]
+        if i > 0 and prev_label_tail and new_label_tail != prev_label_tail and (new_label_head == "B" or new_label_head == "O"):
+            prev_dict["index"] = prev_index
+            prev_dict["type"] = prev_label_tail
+            ner_json.append(json.loads(json.dumps(prev_dict)))
+            prev_dict = {}
+            prev_label_tail = None
+            prev_index = []
+        elif label != "O":
+            prev_label_tail = new_label_tail
+            prev_index.append(i)
+
+    example["ner"] = ner_json
+    return example
+
+def process_tags(examples):
+    new_tags = []
+    for tag in examples:
+        new_tag = tag.split("-")[-1]
+        new_tags.append(new_tag)
+    return new_tags
+
+def load_data_bert(config):
+    datasets = load_dataset('./data/englishv12')
+   
+    print("暂时跑10000个sample, 哎")
+    #train_data = load_dataset('./data/englishv12',split='train[:10000]')
+    #dev_data = load_dataset('./data/englishv12',split='validation[:1000]')
+    #test_data = load_dataset('./data/englishv12',split='test[:1000]')
+    train_data = datasets["train"]
+    dev_data = datasets["validation"]
+    test_data = datasets["test"]
+    
+    # update_datasets = datasets.map(convert_format, batched=False, load_from_cache_file=False)
+    update_datasets = datasets.map(convert_format, batched=False)
+    # updated_train_data = load_dataset('./data/englishv12',split='train[:10000]')
+    # updated_dev_data = load_dataset('./data/englishv12',split='validation[:1000]')
+    # updated_test_data = load_dataset('./data/englishv12',split='test[:1000]')
+    # updated_train_data = updated_train_data.map(convert_format, batched=False, load_from_cache_file=False)
+    # updated_dev_data = updated_dev_data.map(convert_format, batched=False, load_from_cache_file=False)
+    # updated_test_data = updated_test_data.map(convert_format, batched=False, load_from_cache_file=False)
+    
+    updated_train_data = update_datasets["train"]
+    updated_dev_data = update_datasets["validation"]
+    updated_test_data = update_datasets["test"]
+
+    
     # obtain the tokenizer, add_prefix_space=True for roberta
     tokenizer = AutoTokenizer.from_pretrained(config.bert_name, cache_dir="./cache/", add_prefix_space=True)
 
     vocab = Vocabulary()
-    # train_ent_num = fill_vocab(vocab, train_data)
-    # dev_ent_num = fill_vocab(vocab, dev_data)
-    # test_ent_num = fill_vocab(vocab, test_data)
-    """
-    length = len(train_data)
-    for i in range(length):
-        ners = train_data[i]["ner_tags"]
-        new_ners = [TAGS[i] for i in ners]
-        
-        train_data[i].update({'ner_tags': new_ners})
-        print(train_data[i]["ner_tags"])
-    length = len(dev_data)
-    for i in range(length):
-        ners = dev_data[i]["ner_tags"]
-        new_ners = [TAGS[i] for i in ners]
-
-        dev_data[i].update({"ner_tags": new_ners})
-
-    length = len(test_data)
-    for i in range(length):
-        ners = dev_data[i]["ner_tags"]
-        new_ners = [TAGS[i] for i in ners]
-
-        test_data[i].update({"ner_tags": new_ners})
-    """
-    print(train_data[0])
-    print("after convert index to str tag")
     
     label_list = datasets["train"].features["ner_tags_index"].feature.names
+    updated_label_list = process_tags(datasets["train"].features["ner_tags_index"].feature.names)
+
     # create label <-> id mapping
-    for label in label_list:
-        print(label)
-        vocab.add_label(label)
-    # print(train_data[0])
-    """ print some stats about the datasets, no need for now
-    table = pt.PrettyTable([config.dataset, 'sentences', 'entities'])
-    table.add_row(['train', len(train_data), train_ent_num])
-    table.add_row(['dev', len(dev_data), dev_ent_num])
-    table.add_row(['test', len(test_data), test_ent_num])
-    config.logger.info("\n{}".format(table)) """
+    if use_author_ner_format:
+        for label in updated_label_list:
+            print(label)
+            vocab.add_label(label)
+    else:
+        for label in label_list:
+            print(label)
+            vocab.add_label(label)
 
     # number of ner tags in sentences + <unk> + <pad> + <suc>
     config.label_num = len(vocab.label2id)
     config.vocab = vocab
 
-    train_dataset = RelationDataset(*process_bert(train_data, tokenizer, vocab))
-    dev_dataset = RelationDataset(*process_bert(dev_data, tokenizer, vocab))
-    test_dataset = RelationDataset(*process_bert(test_data, tokenizer, vocab))
-    return (train_dataset, dev_dataset, test_dataset), (train_data, dev_data, test_data)
+    train_dataset = None
+    dev_dataset = None
+    test_dataset = None
+    ori_train_data = None
+    ori_dev_data = None
+    ori_test_data = None
+
+    if use_author_ner_format:
+        train_dataset = RelationDataset(*process_bert(updated_train_data, tokenizer, vocab))
+        dev_dataset = RelationDataset(*process_bert(updated_dev_data, tokenizer, vocab))
+        test_dataset = RelationDataset(*process_bert(updated_test_data, tokenizer, vocab))
+        ori_train_data = updated_train_data
+        ori_dev_data = updated_dev_data
+        ori_test_data = updated_test_data
+    else:
+        train_dataset = RelationDataset(*process_bert(train_data, tokenizer, vocab))
+        dev_dataset = RelationDataset(*process_bert(dev_data, tokenizer, vocab))
+        test_dataset = RelationDataset(*process_bert(test_data, tokenizer, vocab))
+        ori_train_data = train_data
+        ori_dev_data = dev_data
+        ori_test_data = test_data
+    return (train_dataset, dev_dataset, test_dataset), (ori_train_data, ori_dev_data, ori_test_data)
 
